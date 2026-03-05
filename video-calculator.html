@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="H0lI1ejYC13qCqVYW385kHmezUU8KYK-KjfoyYW2VZk" />
+    <meta name="description" content="免費線上影音位元率(Bitrate)與檔案大小計算機。幫助創作者、實況主與備份玩家精準換算影片容量。支援 OBS 錄影設定、LINE/Discord 傳檔大小預估，一鍵算出最完美的影片壓縮參數。">
+    <meta name="keywords" content="位元率計算機, 影片檔案大小計算, Bitrate換算, OBS位元率設定, 影片轉檔大小, 壓縮影片容量, Handbrake參數">
+    <title>影片轉檔位元率(Bitrate)與容量精算機｜精準預估檔案大小</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "什麼是位元率 (Bitrate)？對影片有什麼影響？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "位元率是指影片每秒鐘包含的數據量，通常以 kbps 或 Mbps 表示。位元率越高，影片畫質越清晰，但檔案容量也會成正比變大；反之則畫質變差、檔案變小。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "1080p 的影片建議設定多少位元率？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "依據 YouTube 官方建議，一般的 1080p (30fps) 影片建議位元率為 8,000 kbps (8 Mbps)；若是 60fps 則建議 12,000 kbps (12 Mbps)。"
+        }
+      }]
+    }
+    </script>
+
+    <style>
+        /* 影音科技風：深色模式設計 */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #9e9e9e;
+            --accent-color: #bb86fc; /* 科技紫 */
+            --accent-hover: #9965f4;
+            --border-color: #333333;
+            --success: #03dac6;
+            --warning: #cf6679;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #000000;
+            border-bottom: 2px solid var(--accent-color);
+            padding: 25px 15px;
+            text-align: center;
+        }
+
+        header h1 { margin: 0; color: var(--accent-color); font-size: 1.8rem; letter-spacing: 1px; }
+        header p { margin: 8px 0 0; color: var(--text-muted); font-size: 1rem; }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .container { grid-template-columns: 1fr 1fr; }
+            .seo-section { grid-column: 1 / -1; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            color: #ffffff;
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; color: #e0e0e0; }
+        
+        /* 時間輸入區特別排版 */
+        .time-inputs { display: flex; gap: 10px; }
+        .time-inputs div { flex: 1; }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: #000000;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        button:hover { background-color: var(--accent-hover); }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(3, 218, 198, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-label { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 5px; }
+        .result-value { font-size: 1.8rem; font-weight: bold; color: var(--success); }
+        .warning-text { color: var(--warning); font-size: 0.85rem; margin-top: 10px; display: block; }
+
+        /* SEO 文章區 */
+        .seo-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .seo-section h2 { color: var(--accent-color); font-size: 1.5rem; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .seo-section h3 { color: #ffffff; font-size: 1.15rem; margin-top: 25px; }
+        .seo-section p, .seo-section li { color: #cccccc; }
+        
+        .ad-banner {
+            background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+            border: 1px solid #444;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .ad-banner a { color: var(--success); text-decoration: none; font-size: 1.1rem; font-weight: bold; }
+        .ad-banner a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎬 影音位元率與檔案容量精算機</h1>
+        <p>轉檔備份、OBS實況、LINE傳檔必備的無損預估工具</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <h2 class="card-title">💾 模式一：預估檔案容量</h2>
+            <p style="font-size: 0.85rem; color: #9e9e9e; margin-bottom: 15px;">適合：設定好 OBS 或轉檔軟體，想知道出來的影片有多大。</p>
+            
+            <div class="input-group time-inputs">
+                <div>
+                    <label>小時 (H)</label>
+                    <input type="number" id="h1" value="1" min="0">
+                </div>
+                <div>
+                    <label>分鐘 (M)</label>
+                    <input type="number" id="m1" value="0" min="0" max="59">
+                </div>
+                <div>
+                    <label>秒數 (S)</label>
+                    <input type="number" id="s1" value="0" min="0" max="59">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>影像位元率 (Video Bitrate)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="vBitrate1" value="6000" min="0" style="flex: 2;">
+                    <select id="vUnit1" style="flex: 1;">
+                        <option value="kbps">kbps</option>
+                        <option value="mbps">Mbps</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>音訊位元率 (Audio Bitrate)</label>
+                <select id="aBitrate1">
+                    <option value="128">128 kbps (標準)</option>
+                    <option value="192">192 kbps (高音質)</option>
+                    <option value="320" selected>320 kbps (無損級)</option>
+                </select>
+            </div>
+
+            <button onclick="calculateSize()">計算檔案大小</button>
+
+            <div id="result-box-1" class="result-box">
+                <div class="result-label">預估產出檔案容量約為：</div>
+                <div id="res-size" class="result-value">0 MB</div>
+                <span id="warn-size" class="warning-text"></span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">🎯 模式二：反推最佳位元率</h2>
+            <p style="font-size: 0.85rem; color: #9e9e9e; margin-bottom: 15px;">適合：想把影片壓到剛好符合 LINE(300MB) 或光碟/隨身碟限制。</p>
+            
+            <div class="input-group time-inputs">
+                <div>
+                    <label>小時 (H)</label>
+                    <input type="number" id="h2" value="0" min="0">
+                </div>
+                <div>
+                    <label>分鐘 (M)</label>
+                    <input type="number" id="m2" value="30" min="0" max="59">
+                </div>
+                <div>
+                    <label>秒數 (S)</label>
+                    <input type="number" id="s2" value="0" min="0" max="59">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>目標檔案限制大小</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="targetSize" value="300" min="1" style="flex: 2;">
+                    <select id="sizeUnit" style="flex: 1;">
+                        <option value="MB">MB</option>
+                        <option value="GB">GB</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>音訊位元率保留 (先扣除音訊空間)</label>
+                <select id="aBitrate2">
+                    <option value="128" selected>128 kbps (標準壓縮)</option>
+                    <option value="192">192 kbps (高音質)</option>
+                    <option value="320">320 kbps (無損級)</option>
+                </select>
+            </div>
+
+            <button onclick="calculateBitrate()">計算最高可用位元率</button>
+
+            <div id="result-box-2" class="result-box" style="border-color: var(--accent-color); background: rgba(187, 134, 252, 0.1);">
+                <div class="result-label">轉檔軟體建議設定：</div>
+                <div id="res-bitrate" class="result-value" style="color: var(--accent-color);">0 kbps</div>
+                <span class="warning-text" style="color: #9e9e9e;">(請將此數值填入 Video Bitrate 欄位)</span>
+            </div>
+        </div>
+
+        <div class="seo-section">
+            <h2>📚 數位典藏與轉檔必備知識</h2>
+            <p>不論您是實況主使用 OBS 錄影、創作者輸出 Premiere 專案，或是想利用 Handbrake 將老舊的家庭錄影帶、M2TS 高畫質檔案數位化備份，理解「位元率 (Bitrate)」與「容量」的關係，能幫您在畫質與硬碟空間中取得完美平衡。</p>
+
+            <h3>💡 常見平台檔案大小限制 (2026年)</h3>
+            <ul>
+                <li><strong>LINE 影片傳送：</strong>單一影片限制最高 <strong>300 MB</strong>，且長度不得超過 5 分鐘。</li>
+                <li><strong>Discord 免費版：</strong>單檔上傳限制已提升至 <strong>25 MB</strong>（Nitro 會員可達 500MB）。</li>
+                <li><strong>FAT32 格式隨身碟：</strong>單一檔案不可超過 <strong>4 GB</strong>。</li>
+            </ul>
+
+            <h3>⚙️ YouTube 官方建議上傳位元率 (SDR)</h3>
+            <ul>
+                <li><strong>1080p (30 fps)：</strong> 8 Mbps (8,000 kbps)</li>
+                <li><strong>1080p (60 fps)：</strong> 12 Mbps (12,000 kbps)</li>
+                <li><strong>4K (30 fps)：</strong> 35~45 Mbps</li>
+                <li><strong>4K (60 fps)：</strong> 53~68 Mbps</li>
+            </ul>
+
+            <div class="ad-banner">
+                💽 影片存太多，硬碟空間見底了嗎？<br>
+                <a href="#" target="_blank">👉 點此查看【2026 創作者推薦 NAS 網路硬碟與 8TB 備份碟】限時特價！</a>
+                <div style="font-size: 0.8rem; color: #777; margin-top: 5px;">保護珍貴的數位回憶，資料備份不能等。</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function getTotalSeconds(h, m, s) {
+            return (parseInt(h) || 0) * 3600 + (parseInt(m) || 0) * 60 + (parseInt(s) || 0);
+        }
+
+        // 模式一：算大小
+        function calculateSize() {
+            const secs = getTotalSeconds(
+                document.getElementById('h1').value,
+                document.getElementById('m1').value,
+                document.getElementById('s1').value
+            );
+            if (secs <= 0) return alert("請輸入有效的影片長度！");
+
+            let vBitrate = parseFloat(document.getElementById('vBitrate1').value) || 0;
+            const vUnit = document.getElementById('vUnit1').value;
+            if (vUnit === 'mbps') vBitrate = vBitrate * 1000; // 統一轉為 kbps
+
+            const aBitrate = parseInt(document.getElementById('aBitrate1').value) || 0;
+            const totalKbps = vBitrate + aBitrate;
+
+            // 公式：(位元率 kbps * 秒數) / 8 = 檔案大小 (KB)
+            const sizeKB = (totalKbps * secs) / 8;
+            const sizeMB = sizeKB / 1024;
+            const sizeGB = sizeMB / 1024;
+
+            let finalDisplay = sizeMB > 1000 ? `${sizeGB.toFixed(2)} GB` : `${sizeMB.toFixed(1)} MB`;
+            
+            document.getElementById('res-size').innerText = finalDisplay;
+            document.getElementById('result-box-1').style.display = 'block';
+
+            // 防呆警告系統
+            const warnEl = document.getElementById('warn-size');
+            if (sizeGB > 4) {
+                warnEl.innerText = "⚠️ 注意：超過 4GB 的檔案無法存入 FAT32 格式的隨身碟。";
+            } else if (sizeMB > 300) {
+                warnEl.innerText = "⚠️ 注意：此檔案已超過 LINE 的 300MB 傳送限制。";
+            } else {
+                warnEl.innerText = "";
+            }
+        }
+
+        // 模式二：算位元率
+        function calculateBitrate() {
+            const secs = getTotalSeconds(
+                document.getElementById('h2').value,
+                document.getElementById('m2').value,
+                document.getElementById('s2').value
+            );
+            if (secs <= 0) return alert("請輸入有效的影片長度！");
+
+            let targetSize = parseFloat(document.getElementById('targetSize').value) || 0;
+            const sizeUnit = document.getElementById('sizeUnit').value;
+            
+            // 統一轉為 KB
+            const targetKB = sizeUnit === 'GB' ? targetSize * 1024 * 1024 : targetSize * 1024;
+            const aBitrate = parseInt(document.getElementById('aBitrate2').value) || 0;
+
+            // 公式反推：總 kbps = (大小 KB * 8) / 秒數
+            const totalKbps = (targetKB * 8) / secs;
+            const vBitrate = totalKbps - aBitrate;
+
+            if (vBitrate <= 0) {
+                alert("目標大小太小或音質設定過高，影像位元率不足！請調大目標大小。");
+                return;
+            }
+
+            document.getElementById('res-bitrate').innerText = `${Math.floor(vBitrate)} kbps`;
+            document.getElementById('result-box-2').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
