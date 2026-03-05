@@ -3,27 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta name="google-site-verification" content="H0lI1ejYC13qCqVYW385kHmezUU8KYK-KjfoyYW2VZk" />
-    
-    <title>台灣法律與國考實用工具箱</title>
+    <meta name="google-site-verification" content="請替換成您的GSC驗證亂碼" />
+
+    <meta name="description" content="專為台灣人設計的免費實用線上工具箱。提供包含：民法消滅時效計算機、蝦皮電商賣家淨利精算機、以及影音轉檔位元率容量計算工具。免安裝、無廣告干擾、注重隱私的純前端工具站。">
+    <meta name="keywords" content="台灣線上工具, 民法時效計算, 蝦皮手續費計算, 影片容量計算, 實用工具箱, 免費計算機">
+    <title>日常實用線上工具箱｜國考、電商、影音創作者必備</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "日常實用線上工具箱",
+      "description": "專為台灣使用者開發的免費實用線上計算工具集合站。",
+      "url": "https://您的帳號.github.io/您的專案名稱/"
+    }
+    </script>
+
     <style>
-        body { font-family: sans-serif; padding: 40px; background: #f8f9fa; line-height: 1.6; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }
-        h1 { color: #2c3e50; }
-        a { display: block; padding: 10px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; margin-top: 15px; text-align: center; font-weight: bold; }
-        a:hover { background: #2980b9; }
+        /* 現代極簡風格與流體排版 */
+        :root {
+            --bg-light: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --card-bg: #ffffff;
+            --primary: #4f46e5; /* 靛藍色，科技與專業感 */
+            --primary-hover: #4338ca;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(243,244,246,0) 100%);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* 網格系統：電腦版顯示三欄，平板兩欄，手機一欄 */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        /* 工具卡片設計 */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #c7d2fe;
+        }
+
+        /* 卡片上方的裝飾線條 */
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: var(--text-dark);
+        }
+
+        .tool-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0 0 20px 0;
+            flex-grow: 1;
+        }
+
+        .tool-link-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tool-link-text::after {
+            content: '→';
+            transition: transform 0.2s;
+        }
+
+        .tool-card:hover .tool-link-text::after {
+            transform: translateX(4px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>線上實用工具箱</h1>
-        <p>這是一個專為台灣法律實務與考生設計的免費工具集合站。</p>
-        
-        <a href="law.html">👉 前往：民法消滅時效計算機</a>
-        
-        </div>
+    <header>
+        <h1>日常實用線上工具箱 🛠️</h1>
+        <p>免安裝、無廣告干擾、注重隱私的純前端工具站。為台灣國考生、電商賣家與數位創作者量身打造。</p>
+    </header>
+
+    <main class="container">
+        <div class="tools-grid">
+
+            <a href="law.html" class="tool-card">
+                <div class="tool-icon">⚖️</div>
+                <h2 class="tool-title">民法消滅時效計算機</h2>
+                <p class="tool-desc">專為台灣民法與國考生設計。自動帶入「始日不算入」與「假日順延」法理，一鍵秒算法定遲延利息與各類請求權時效屆滿日。</p>
+                <div class="tool-link-text">立即計算</div>
+            </a>
+
+            <a href="shopee-calculator.html" class="tool-card">
+                <div class="tool-icon">🛒</div>
+                <h2 class="tool-title">賣家真實淨利精算機</h2>
+                <p class="tool-desc">網拍、蝦皮賣家必備！輸入售價與成本，自動扣除平台成交手續費、金流費、活動抽成與包材，拒絕賠錢賣，精算真實毛利率。</p>
+                <div class="tool-link-text">精算利潤</div>
+            </a>
+
+            <a href="video-calculator.html" class="tool-card">
+                <div class="tool-icon">🎬</div>
+                <h2 class="tool-title">影音位元率與容量精算機</h2>
+                <p class="tool-desc">創作者與備份玩家的轉檔神器。雙向精準換算「影片檔案大小」與「位元率 (Bitrate)」，完美閃避 LINE 或隨身碟的容量限制。</p>
+                <div class="tool-link-text">預估容量</div>
+            </a>
+
+            </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 實用線上工具箱. All rights reserved.<br>100% 本機運算，您的資料不會被上傳至任何伺服器。</p>
+    </footer>
 
 </body>
 </html>
