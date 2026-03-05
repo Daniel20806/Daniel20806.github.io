@@ -1,2 +1,183 @@
 # Daniel20806.github.io
-web
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="免費且注重隱私的台灣民法消滅時效與期日期間計算工具。提供一般請求權、租金、利息及短期時效自動試算，包含始日不算入與假日順延邏輯。">
+    <title>民法消滅時效計算機｜期日期間自動試算</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f8f9fa;
+            --box-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 8px;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: var(--box-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result-box {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4f8;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+        }
+        .result-value {
+            font-weight: bold;
+            color: #d35400;
+            font-size: 1.1rem;
+        }
+        .legal-note {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 15px;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>民法消滅時效計算機</h1>
+    <p class="subtitle">100% 本機運算，保障隱私，資料不上傳</p>
+
+    <div class="form-group">
+        <label for="startDate">請求權可行使之日 (起算日)</label>
+        <input type="title" id="startDate" type="date" required>
+    </div>
+
+    <div class="form-group">
+        <label for="claimType">債權種類 (決定時效期間)</label>
+        <select id="claimType">
+            <option value="15">一般請求權 (15年) - 第125條</option>
+            <option value="5">利息、紅利、租金、退職金 (5年) - 第126條</option>
+            <option value="2">住宿費、運費、醫師診療費、商品代價 (2年) - 第127條</option>
+        </select>
+    </div>
+
+    <button onclick="calculateLimitation()">立即計算時效屆滿日</button>
+
+    <div id="result-box">
+        <div class="result-item">消滅時效期間：<span id="res-period" class="result-value"></span></div>
+        <div class="result-item">時效屆滿日：<span id="res-date" class="result-value"></span></div>
+        
+        <div class="legal-note">
+            <strong>適用法理：</strong><br>
+            1. 依民法第120條第2項，以日、星期、月或年定期間者，其<b>始日不算入</b>。<br>
+            2. 依民法第122條，期間之末日為星期日或休息日時，以其<b>休息日之次日</b>代之 (本系統已自動判斷週末並順延至週一)。
+        </div>
+    </div>
+</div>
+
+<script>
+    // 設定今天的日期為預設值
+    document.getElementById('startDate').valueAsDate = new Date();
+
+    function calculateLimitation() {
+        const startDateInput = document.getElementById('startDate').value;
+        const years = parseInt(document.getElementById('claimType').value);
+        
+        if (!startDateInput) {
+            alert("請選擇起算日");
+            return;
+        }
+
+        // 解析輸入日期
+        const startDate = new Date(startDateInput);
+        
+        // 依據民法第120條始日不算入，時效期間自起算日之次日起算。
+        // 若以年定期間，依第121條第2項，以期間末日之終止為終止。
+        // 實務上計算：例如 2026-03-05 起算，15年時效屆滿日為 2041-03-05 (24:00)。
+        let endDate = new Date(startDate);
+        endDate.setFullYear(endDate.getFullYear() + years);
+
+        // 檢查末日是否為週末 (民法第122條)
+        // 0 = 星期日, 6 = 星期六
+        const dayOfWeek = endDate.getDay();
+        let extendedNote = "";
+        if (dayOfWeek === 6) { // 星期六
+            endDate.setDate(endDate.getDate() + 2);
+            extendedNote = " (原屆滿日為週六，依民法第122條順延至次工作日)";
+        } else if (dayOfWeek === 0) { // 星期日
+            endDate.setDate(endDate.getDate() + 1);
+            extendedNote = " (原屆滿日為週日，依民法第122條順延至次工作日)";
+        }
+
+        // 格式化輸出日期 (YYYY年MM月DD日)
+        const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const finalDateStr = endDate.toLocaleDateString('zh-TW', formatOptions);
+
+        // 顯示結果
+        document.getElementById('res-period').innerText = years + " 年";
+        document.getElementById('res-date').innerText = finalDateStr + extendedNote;
+        document.getElementById('result-box').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
