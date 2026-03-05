@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="H0lI1ejYC13qCqVYW385kHmezUU8KYK-KjfoyYW2VZk" />
+    <meta name="description" content="2026最新版！電商與蝦皮賣家專用的真實淨利與手續費計算機。輸入售價與成本，一鍵自動扣除成交手續費、金流費、活動抽成與包材成本，幫你精算真實毛利率，拒絕賠本賣！">
+    <meta name="keywords" content="蝦皮手續費計算, 賣家淨利計算機, 蝦皮抽成怎麼算, 電商毛利率試算, 蝦皮免運手續費, 網購定價工具">
+    <title>2026 蝦皮手續費與賣家淨利計算機｜精算真實毛利率</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "蝦皮手續費總共抽多少？怎麼算？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "一般賣家的手續費通常包含三塊：1. 成交手續費 (約 5.5%~7.5%)、2. 金流手續費 (2%)、3. 若參加免運或蝦幣活動會額外加收 (約 4%~5%)。總抽成可能高達 11%~14.5% 之間。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "如何定價才不會虧本？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "除了商品進貨成本外，必須將『平台總抽成』、『包裝耗材(紙箱/氣泡紙)』與『退貨風險成本』算入。建議使用本計算機，確保『真實毛利率』維持在 20% 以上才具有基本利潤空間。"
+        }
+      }]
+    }
+    </script>
+
+    <style>
+        /* 現代電商視覺風格：以橘色(轉化率高)與深灰色為主 */
+        :root {
+            --brand-color: #ee4d2d; /* 經典電商橘 */
+            --brand-hover: #d73d20;
+            --bg-color: #f6f6f6;
+            --card-bg: #ffffff;
+            --text-dark: #222222;
+            --text-gray: #757575;
+            --border-color: #e0e0e0;
+            --success-green: #2e7d32;
+            --danger-red: #c62828;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 3px solid var(--brand-color);
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--brand-color);
+            font-size: 1.6rem;
+        }
+
+        header p { margin: 5px 0 0; color: var(--text-gray); font-size: 0.95rem; }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        /* 桌面版雙欄佈局 */
+        @media (min-width: 768px) {
+            .container { grid-template-columns: 1fr 1fr; }
+            .seo-section { grid-column: 1 / -1; } /* SEO 文章佔滿整行 */
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; }
+        .input-group .note { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 5px; display: block; }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--brand-color);
+            box-shadow: 0 0 0 2px rgba(238, 77, 45, 0.2);
+        }
+
+        /* 將手續費比例設定為可調整，避免平台改規則工具就報廢 */
+        .fee-settings {
+            background: #fff8f6;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed #ffbcae;
+            margin-bottom: 20px;
+        }
+
+        button.calc-btn {
+            width: 100%;
+            background-color: var(--brand-color);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button.calc-btn:hover { background-color: var(--brand-hover); }
+
+        /* 結果顯示區 */
+        .result-box {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+        .result-row.total-fee { color: var(--danger-red); }
+        .result-row.net-profit {
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding-top: 15px;
+            border-top: 2px solid var(--border-color);
+            color: var(--success-green);
+        }
+        .profit-warning {
+            display: none;
+            background: #ffebee;
+            color: var(--danger-red);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* SEO 文章區 */
+        .seo-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+        .seo-section h2 { color: var(--brand-color); font-size: 1.4rem; }
+        .seo-section h3 { color: var(--text-dark); font-size: 1.1rem; margin-top: 25px; border-left: 4px solid var(--brand-color); padding-left: 10px; }
+        .ad-banner {
+            background: #e8f5e9;
+            border: 2px dashed #4caf50;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 25px;
+            font-weight: bold;
+        }
+        .ad-banner a { color: #2e7d32; text-decoration: none; font-size: 1.1rem; }
+        .ad-banner a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🛒 賣家真實淨利與手續費計算機</h1>
+        <p>自動扣除平台抽成、金流費與包材，精算真實利潤！</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <h2 class="card-title">💰 商品售價與成本</h2>
+            <div class="input-group">
+                <label>商品買家結帳金額 (售價)</label>
+                <input type="number" id="sellPrice" placeholder="例如：1000" min="0">
+            </div>
+            <div class="input-group">
+                <label>商品進貨成本</label>
+                <input type="number" id="itemCost" placeholder="例如：500" min="0">
+            </div>
+            <div class="input-group">
+                <label>包材與出貨成本 (紙箱/破壞袋/印表機貼紙)</label>
+                <input type="number" id="packCost" value="10" min="0">
+            </div>
+
+            <h2 class="card-title" style="margin-top: 30px;">⚙️ 平台抽成設定 (可自行修改)</h2>
+            <div class="fee-settings">
+                <div class="input-group">
+                    <label>平台成交手續費 (%)</label>
+                    <span class="note">一般約 5.5% ~ 7.5% 不等</span>
+                    <input type="number" id="transFeeRate" value="7.5" step="0.1" min="0">
+                </div>
+                <div class="input-group">
+                    <label>金流手續費 (%)</label>
+                    <span class="note">信用卡/貨到付款通常為 2%</span>
+                    <input type="number" id="payFeeRate" value="2.0" step="0.1" min="0">
+                </div>
+                <div class="input-group">
+                    <label>額外活動抽成 (%) - 免運/蝦幣回饋</label>
+                    <span class="note">若無參加請填 0，有參加通常為 4%~5%</span>
+                    <input type="number" id="promoFeeRate" value="5.0" step="0.1" min="0">
+                </div>
+            </div>
+
+            <button class="calc-btn" onclick="calculateProfit()">立即精算淨利 📈</button>
+        </div>
+
+        <div class="card result-box">
+            <h2 class="card-title">📊 試算結果</h2>
+            
+            <div class="result-row">
+                <span>商品售價：</span>
+                <span id="res-price">$0</span>
+            </div>
+            <div class="result-row">
+                <span>扣除進貨與包材成本：</span>
+                <span id="res-cost">-$0</span>
+            </div>
+            <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 15px 0;">
+            
+            <div class="result-row total-fee">
+                <span>平台成交手續費：</span>
+                <span id="res-trans-fee">-$0</span>
+            </div>
+            <div class="result-row total-fee">
+                <span>平台金流手續費：</span>
+                <span id="res-pay-fee">-$0</span>
+            </div>
+            <div class="result-row total-fee">
+                <span>活動額外抽成：</span>
+                <span id="res-promo-fee">-$0</span>
+            </div>
+            <div class="result-row total-fee" style="font-weight: bold;">
+                <span>⚠️ 平台總抽成合計：</span>
+                <span id="res-total-fee">-$0</span>
+            </div>
+
+            <div class="result-row net-profit">
+                <span>真實入袋淨利：</span>
+                <span id="res-net-profit">$0</span>
+            </div>
+            <div class="result-row" style="margin-top: 10px; font-weight: bold; color: var(--text-dark);">
+                <span>真實毛利率：</span>
+                <span id="res-margin">0%</span>
+            </div>
+
+            <div id="warning-msg" class="profit-warning">
+                🚨 警告：此定價扣除平台手續費後正在賠錢！請調高售價。
+            </div>
+
+            <div class="ad-banner">
+                💡 覺得包材成本太高吃掉利潤？<br>
+                <a href="#" target="_blank">👉 點此購買工廠直營【加厚破壞袋 / 熱感應出貨標籤紙】，整箱批發省 30% 成本！</a>
+                <div style="font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #555;">(未來這裡可以放你的聯盟行銷連結，賺取被動收入)</div>
+            </div>
+        </div>
+
+        <div class="seo-section">
+            <h2>📝 為什麼你需要賣家淨利計算機？</h2>
+            <p>在台灣經營電商（如蝦皮購物、露天、賣貨便），最怕遇到的就是「營業額很高，但月底結算沒賺錢」。隨著各大平台不斷調漲手續費，精準的定價策略是賣家存活的唯一關鍵。本工具幫助您一鍵釐清所有隱藏成本，確保您的每一筆訂單都有健康的毛利率。</p>
+
+            <h3>🔍 電商平台手續費包含哪些？(2026年標準)</h3>
+            <ul>
+                <li><strong>成交手續費：</strong>平台提供流量與上架服務的抽成。非商城賣家在非促銷檔期通常為 5.5%，大促銷日可能調漲至 7.5%。</li>
+                <li><strong>金流手續費：</strong>無論買家使用信用卡、轉帳還是超商貨到付款，金流服務商都會收取固定 2% 的手續費。</li>
+                <li><strong>活動額外抽成：</strong>若您報名了「超商免運」或「10%蝦幣回饋」活動，平台會針對該筆訂單額外抽取 4% 到 5% 不等的服務費。</li>
+            </ul>
+
+            <h3>💡 新手賣家定價公式與建議</h3>
+            <p>千萬不要只拿「進貨成本」來定價！一個健康的電商定價模型，除了進貨成本外，還必須將 <strong>「平台總抽成（約抓 12%~15%）」、「包材耗材費（紙箱、膠帶）」、「退貨折損率」</strong> 全部考量進去。建議使用本計算機試算，若「真實毛利率」低於 15%，代表您可能正在做白工，建議重新尋找貨源或提升品牌溢價。</p>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateProfit() {
+            // 讀取輸入值，若未輸入則預設為 0
+            const price = parseFloat(document.getElementById('sellPrice').value) || 0;
+            const itemCost = parseFloat(document.getElementById('itemCost').value) || 0;
+            const packCost = parseFloat(document.getElementById('packCost').value) || 0;
+            
+            const transRate = parseFloat(document.getElementById('transFeeRate').value) || 0;
+            const payRate = parseFloat(document.getElementById('payFeeRate').value) || 0;
+            const promoRate = parseFloat(document.getElementById('promoFeeRate').value) || 0;
+
+            if (price <= 0) {
+                alert("請輸入有效的商品售價！");
+                return;
+            }
+
+            // 平台手續費計算 (通常平台會採四捨五入到整數)
+            const transFee = Math.round(price * (transRate / 100));
+            const payFee = Math.round(price * (payRate / 100));
+            const promoFee = Math.round(price * (promoRate / 100));
+            const totalFee = transFee + payFee + promoFee;
+
+            // 淨利與毛利率計算
+            const totalCost = itemCost + packCost;
+            const netProfit = price - totalCost - totalFee;
+            const margin = ((netProfit / price) * 100).toFixed(1);
+
+            // 更新畫面結果
+            document.getElementById('res-price').innerText = `$${price}`;
+            document.getElementById('res-cost').innerText = `-$${totalCost}`;
+            
+            document.getElementById('res-trans-fee').innerText = `-$${transFee}`;
+            document.getElementById('res-pay-fee').innerText = `-$${payFee}`;
+            document.getElementById('res-promo-fee').innerText = `-$${promoFee}`;
+            document.getElementById('res-total-fee').innerText = `-$${totalFee}`;
+            
+            document.getElementById('res-net-profit').innerText = `$${netProfit}`;
+            document.getElementById('res-margin').innerText = `${margin}%`;
+
+            // 賠錢防呆警告
+            const warningBox = document.getElementById('warning-msg');
+            const profitEl = document.getElementById('res-net-profit');
+            const marginEl = document.getElementById('res-margin');
+
+            if (netProfit < 0) {
+                warningBox.style.display = 'block';
+                profitEl.style.color = 'var(--danger-red)';
+                marginEl.style.color = 'var(--danger-red)';
+            } else {
+                warningBox.style.display = 'none';
+                profitEl.style.color = 'var(--success-green)';
+                marginEl.style.color = 'var(--text-dark)';
+            }
+        }
+    </script>
+</body>
+</html>
