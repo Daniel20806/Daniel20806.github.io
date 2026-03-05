@@ -3,181 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="免費且注重隱私的台灣民法消滅時效與期日期間計算工具。提供一般請求權、租金、利息及短期時效自動試算，包含始日不算入與假日順延邏輯。">
     <meta name="google-site-verification" content="H0lI1ejYC13qCqVYW385kHmezUU8KYK-KjfoyYW2VZk" />
-    <title>民法消滅時效計算機｜期日期間自動試算</title>
+    <meta name="description" content="2026最新版！免費且注重隱私的台灣民法消滅時效與期日期間計算工具。提供一般請求權(15年)、租金利息(5年)及短期時效(2年)自動試算，精準內建始日不算入與假日順延邏輯，國考生與法務實務必備。">
+    <meta name="keywords" content="民法消滅時效, 期日期間計算, 始日不算入, 假日順延, 民法第125條, 國家考試計算工具, 法定遲延利息">
+    <title>民法消滅時效計算機｜期日期間自動秒算 (含假日順延)</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "民法的消滅時效怎麼算？有包含始日嗎？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "依據民法第120條第2項規定，以日、星期、月或年定期間者，其始日不算入。因此時效是從起算日的『次日』開始起算。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "如果時效屆滿日剛好遇到星期日或國定假日怎麼辦？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "依據民法第122條，期間之末日為星期日、紀念日或其他休息日時，以其休息日之次日代之。也就是會自動順延至下一個工作日。"
+        }
+      }]
+    }
+    </script>
+
     <style>
+        /* 現代化色彩配置：專業、信任感、好閱讀 */
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --bg-color: #f8f9fa;
-            --box-bg: #ffffff;
-            --text-color: #333333;
-            --border-radius: 8px;
+            --primary-dark: #1a365d; /* 深海藍 (信任感) */
+            --primary-action: #2b6cb0; /* 按鈕藍 */
+            --primary-hover: #2c5282;
+            --bg-light: #f7fafc;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --accent-orange: #dd6b20; /* 突顯結果用的亮橘色 */
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            font-family: 'Segoe UI', "Microsoft JhengHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.7;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: var(--box-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
+
+        /* 頂部導覽列風格 */
+        header {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
+
+        header h1 {
+            margin: 0;
             font-size: 1.8rem;
-            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
-        p.subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+
+        header p {
+            margin: 5px 0 0 0;
+            color: #e2e8f0;
+            font-size: 0.95rem;
         }
+
+        /* 主內容區塊限制寬度，確保手機和電腦都好看 */
+        .main-container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* 計算機卡片設計 */
+        .calculator-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            border-top: 5px solid var(--primary-action);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-weight: 600;
+            color: var(--primary-dark);
         }
+
         input[type="date"], select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
             font-size: 1rem;
             box-sizing: border-box;
+            background-color: #f8fafc;
+            transition: border-color 0.2s;
         }
+
+        input[type="date"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-action);
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+
         button {
             width: 100%;
-            background-color: var(--secondary-color);
+            background-color: var(--primary-action);
             color: white;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(43, 108, 176, 0.3);
         }
+
         button:hover {
-            background-color: #2980b9;
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(43, 108, 176, 0.4);
         }
+
+        /* 計算結果展示區 */
         #result-box {
             display: none;
-            margin-top: 25px;
+            margin-top: 30px;
             padding: 20px;
-            background-color: #e8f4f8;
-            border-left: 5px solid var(--secondary-color);
-            border-radius: 4px;
+            background-color: #fffaf0;
+            border-left: 6px solid var(--accent-orange);
+            border-radius: 6px;
+            animation: fadeIn 0.5s ease-in-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .result-item {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .result-value {
+            font-weight: 800;
+            color: var(--accent-orange);
+            font-size: 1.3rem;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .legal-note {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+            border-top: 1px dashed #cbd5e0;
+            padding-top: 15px;
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        /* SEO 文章區塊設計 */
+        .seo-article {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .seo-article h2 {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .seo-article h3 {
+            color: var(--primary-action);
+            font-size: 1.2rem;
+            margin-top: 30px;
+        }
+
+        .seo-article ul, .seo-article ol {
+            padding-left: 20px;
+            color: var(--text-main);
+        }
+
+        .seo-article li {
             margin-bottom: 10px;
         }
-        .result-value {
-            font-weight: bold;
-            color: #d35400;
-            font-size: 1.1rem;
+
+        .faq-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #cbd5e0;
         }
-        .legal-note {
-            font-size: 0.85rem;
-            color: #555;
-            margin-top: 15px;
-            border-top: 1px dashed #ccc;
-            padding-top: 10px;
+
+        .faq-q {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>民法消滅時效計算機</h1>
-    <p class="subtitle">100% 本機運算，保障隱私，資料不上傳</p>
+    <header>
+        <h1>⚖️ 民法消滅時效計算機</h1>
+        <p>100% 本機運算・免安裝・精準國考實務標準</p>
+    </header>
 
-    <div class="form-group">
-        <label for="startDate">請求權可行使之日 (起算日)</label>
-        <input type="date" id="startDate" required>
-    </div>
-
-    <div class="form-group">
-        <label for="claimType">債權種類 (決定時效期間)</label>
-        <select id="claimType">
-            <option value="15">一般請求權 (15年) - 第125條</option>
-            <option value="5">利息、紅利、租金、退職金 (5年) - 第126條</option>
-            <option value="2">住宿費、運費、醫師診療費、商品代價 (2年) - 第127條</option>
-        </select>
-    </div>
-
-    <button onclick="calculateLimitation()">立即計算時效屆滿日</button>
-
-    <div id="result-box">
-        <div class="result-item">消滅時效期間：<span id="res-period" class="result-value"></span></div>
-        <div class="result-item">時效屆滿日：<span id="res-date" class="result-value"></span></div>
+    <div class="main-container">
         
-        <div class="legal-note">
-            <strong>適用法理：</strong><br>
-            1. 依民法第120條第2項，以日、星期、月或年定期間者，其<b>始日不算入</b>。<br>
-            2. 依民法第122條，期間之末日為星期日或休息日時，以其<b>休息日之次日</b>代之 (本系統已自動判斷週末並順延至週一)。
-        </div>
+        <main class="calculator-card">
+            <div class="form-group">
+                <label for="startDate">📅 請求權可行使之日 (起算日)</label>
+                <input type="date" id="startDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="claimType">📜 債權種類 (決定時效期間)</label>
+                <select id="claimType">
+                    <option value="15">一般請求權 (15年) - 民法第125條</option>
+                    <option value="5">利息、紅利、租金、退職金 (5年) - 民法第126條</option>
+                    <option value="2">住宿費、運費、醫師診療費、商品代價 (2年) - 民法第127條</option>
+                </select>
+            </div>
+
+            <button onclick="calculateLimitation()">一鍵計算時效屆滿日 🚀</button>
+
+            <div id="result-box">
+                <div class="result-item">📌 適用時效：<span id="res-period" class="result-value"></span></div>
+                <div class="result-item">🚨 時效屆滿日：<br><span id="res-date" class="result-value"></span></div>
+                
+                <div class="legal-note">
+                    <strong>💡 系統自動套用之法理：</strong><br>
+                    1. <b>始日不算入：</b>依民法第120條第2項，期間自起算日之「次日」起算。<br>
+                    2. <b>假日順延機制：</b>依民法第122條，期間之末日若為星期日或休息日，以其「休息日之次日」代之。(本系統已自動為您偵測並順延週末)
+                </div>
+            </div>
+        </main>
+
+        <section class="seo-article">
+            <h2>📖 為什麼需要民法消滅時效計算機？</h2>
+            <p>無論您是準備國家考試（如高普考、司法特考、地特）的考生，或是處理日常法律實務的工作者，手動計算「消滅時效」與「期日期間」往往是最容易出錯的陷阱。本線上工具專為台灣民法設計，幫助您在刷題檢討、或是核對實務案件時，瞬間得出精準的解答。</p>
+
+            <h3>🔍 本系統支援的法條與時效種類</h3>
+            <ul>
+                <li><strong>一般請求權（15年）：</strong>依民法第 125 條規定，請求權因十五年間不行使而消滅。適用於多數未特別規定的債權。</li>
+                <li><strong>短期時效（5年）：</strong>依民法第 126 條規定，利息、紅利、租金、贍養費、退職金及其他一年或不及一年之定期給付債權。</li>
+                <li><strong>短期時效（2年）：</strong>依民法第 127 條規定，包含旅店住宿費、運費、醫師診療費、律師報酬、技師與承攬人之報酬、商品代價等。</li>
+            </ul>
+
+            <h3>🙋 常見問答 (FAQ)</h3>
+            <div class="faq-box">
+                <div class="faq-q">Q: 時效計算有包含第一天（始日）嗎？</div>
+                <div>A: 沒有。依據民法第120條第2項規定，以日、星期、月或年定期間者，其始日不算入。本計算機已將此邏輯寫入程式中。</div>
+            </div>
+            <div class="faq-box">
+                <div class="faq-q">Q: 如果時效最後一天剛好遇到假日怎麼辦？</div>
+                <div>A: 依據民法第122條，若期間末日為星期日或國定休息日，會自動順延至下一個工作日。本系統會自動為您偵測週末並進行順延提示。</div>
+            </div>
+            <div class="faq-box">
+                <div class="faq-q">Q: 我的輸入資料會被外洩嗎？</div>
+                <div>A: 絕對不會。本工具為純網頁前端程式（HTML/JS），100% 於您的設備本機執行，不連接任何資料庫，您的操作軌跡完全保密。</div>
+            </div>
+        </section>
+
     </div>
-</div>
 
-<script>
-    // 設定今天的日期為預設值
-    document.getElementById('startDate').valueAsDate = new Date();
+    <footer>
+        <p>為台灣法律人與國考生打造的免費工具集合站。<br>
+        免責聲明：本計算結果僅供參考與學習輔助，實際法律效力與期日認定請以法院實務見解為準。</p>
+    </footer>
 
-    function calculateLimitation() {
-        const startDateInput = document.getElementById('startDate').value;
-        const years = parseInt(document.getElementById('claimType').value);
-        
-        if (!startDateInput) {
-            alert("請選擇起算日");
-            return;
+    <script>
+        document.getElementById('startDate').valueAsDate = new Date();
+
+        function calculateLimitation() {
+            const startDateInput = document.getElementById('startDate').value;
+            const years = parseInt(document.getElementById('claimType').value);
+            
+            if (!startDateInput) {
+                alert("請選擇起算日");
+                return;
+            }
+
+            const startDate = new Date(startDateInput);
+            
+            // 依據民法第120條始日不算入，並依第121條第2項計算
+            let endDate = new Date(startDate);
+            endDate.setFullYear(endDate.getFullYear() + years);
+
+            // 檢查末日是否為週末 (民法第122條假日順延)
+            const dayOfWeek = endDate.getDay();
+            let extendedNote = "";
+            
+            if (dayOfWeek === 6) { // 星期六
+                endDate.setDate(endDate.getDate() + 2);
+                extendedNote = "<br><span style='font-size:0.9rem; color:#718096;'>(🔔 原屆滿日為週六，依民法122條順延至次工作日)</span>";
+            } else if (dayOfWeek === 0) { // 星期日
+                endDate.setDate(endDate.getDate() + 1);
+                extendedNote = "<br><span style='font-size:0.9rem; color:#718096;'>(🔔 原屆滿日為週日，依民法122條順延至次工作日)</span>";
+            }
+
+            const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const finalDateStr = endDate.toLocaleDateString('zh-TW', formatOptions);
+
+            document.getElementById('res-period').innerText = years + " 年";
+            document.getElementById('res-date').innerHTML = finalDateStr + extendedNote;
+            document.getElementById('result-box').style.display = 'block';
         }
-
-        // 解析輸入日期
-        const startDate = new Date(startDateInput);
-        
-        // 依據民法第120條始日不算入，時效期間自起算日之次日起算。
-        // 若以年定期間，依第121條第2項，以期間末日之終止為終止。
-        // 實務上計算：例如 2026-03-05 起算，15年時效屆滿日為 2041-03-05 (24:00)。
-        let endDate = new Date(startDate);
-        endDate.setFullYear(endDate.getFullYear() + years);
-
-        // 檢查末日是否為週末 (民法第122條)
-        // 0 = 星期日, 6 = 星期六
-        const dayOfWeek = endDate.getDay();
-        let extendedNote = "";
-        if (dayOfWeek === 6) { // 星期六
-            endDate.setDate(endDate.getDate() + 2);
-            extendedNote = " (原屆滿日為週六，依民法第122條順延至次工作日)";
-        } else if (dayOfWeek === 0) { // 星期日
-            endDate.setDate(endDate.getDate() + 1);
-            extendedNote = " (原屆滿日為週日，依民法第122條順延至次工作日)";
-        }
-
-        // 格式化輸出日期 (YYYY年MM月DD日)
-        const formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-        const finalDateStr = endDate.toLocaleDateString('zh-TW', formatOptions);
-
-        // 顯示結果
-        document.getElementById('res-period').innerText = years + " 年";
-        document.getElementById('res-date').innerText = finalDateStr + extendedNote;
-        document.getElementById('result-box').style.display = 'block';
-    }
-</script>
+    </script>
 
 </body>
 </html>
